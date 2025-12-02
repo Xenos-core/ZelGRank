@@ -50,8 +50,7 @@ public class DemoteCommand implements CommandExecutor {
                 sender.sendMessage(miniMessage.deserialize("<red>Failed to load user data!"));
                 return;
             }
-            InheritanceNode node = InheritanceNode.builder(rankName).build();
-            user.data().remove(node);
+            user.data().clear(node -> node instanceof InheritanceNode && ((InheritanceNode) node).getGroupName().equalsIgnoreCase(rankName));
             luckPerms.getUserManager().saveUser(user).thenRun(() -> {
                 sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.rank-removed", "<green>Successfully removed rank <yellow>{rank}</yellow> from <yellow>{player}</yellow>!").replace("{player}", targetPlayer.getName()).replace("{rank}", rankName)));
             });

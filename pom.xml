@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>ZelGRank</name>
-    <description>Simplified rank management with LuckPerms integration</description>
+    <description>Simplified rank management with LuckPerms</description>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -19,7 +19,6 @@
     </properties>
 
     <repositories>
-        <!-- Paper API Repository -->
         <repository>
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
@@ -27,7 +26,6 @@
     </repositories>
 
     <dependencies>
-        <!-- Paper API -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -35,7 +33,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- LuckPerms API -->
         <dependency>
             <groupId>net.luckperms</groupId>
             <artifactId>api</artifactId>

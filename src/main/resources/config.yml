@@ -10,6 +10,11 @@ messages:
   player-not-found: "<red>Player <yellow>{player}</yellow> is not online!"
   rank-given: "<green>Successfully gave rank <yellow>{rank}</yellow> to <yellow>{player}</yellow> for <yellow>{duration}</yellow>!"
   rank-removed: "<green>Successfully removed rank <yellow>{rank}</yellow> from <yellow>{player}</yellow>!"
+  rank-expiry-header: "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  rank-expiry-title: "<red><bold>⚠ RANK EXPIRATION WARNING ⚠</bold>"
+  rank-expiry-line: "<yellow>• Rank <gold><bold>{rank}</bold></gold> expires in: <red>{time}</red>"
+  rank-expiry-renew: "<green>Renew your rank at: <white>@NoxelStore"
+  rank-expiry-footer: "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   broadcast:
     - ""
     - "<green>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
