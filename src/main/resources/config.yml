@@ -1,10 +1,11 @@
 #Made with love @NiceHashe
-
+#SOUNDS 
 sound:
   enabled: true
   type: "ENTITY_EXPERIENCE_ORB_PICKUP"
   volume: 1.0
   pitch: 1.0
+#RANK EXPIRY NOTIFICATIONS
 messages:
   no-permission: "<red>You don't have permission to use this command!"
   player-not-found: "<red>Player <yellow>{player}</yellow> is not online!"
@@ -15,6 +16,7 @@ messages:
   rank-expiry-line: "<yellow>• Rank <gold><bold>{rank}</bold></gold> expires in: <red>{time}</red>"
   rank-expiry-renew: "<green>Renew your rank at: <white>@NoxelStore"
   rank-expiry-footer: "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+#RANK PURCHASE BROADCAST
   broadcast:
     - ""
     - "<green>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -28,6 +30,7 @@ messages:
     - "<green>For rank purchases, contact: <green>@NoxelStore"
     - "<green>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     - ""
+#RANK PRICES
 rank-prices:
   VIP: "9.99"
   VIP+: "19.99"
