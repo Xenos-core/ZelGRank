@@ -1,0 +1,42 @@
+name: ZelGRank
+version: '${project.version}'
+main: com.zelg.zelgrank.ZelGRank
+api-version: '1.20'
+author: Macronis
+description: Simplified rank management with LuckPerms integration
+depend: [LuckPerms]
+
+commands:
+  giverank:
+    description: Give a rank to a player with optional duration
+    usage: /giverank <player> <rank> [duration]
+    permission: zelgrank.give
+    aliases: [grank, givegroup]
+  demote:
+    description: Remove a rank from a player
+    usage: /demote <player> <rank>
+    permission: zelgrank.demote
+    aliases: [removerank, takerank]
+  ginfo:
+    description: View and manage player permissions
+    usage: /ginfo <player>
+    permission: zelgrank.info
+    aliases: [groupinfo, rankinfo]
+
+permissions:
+  zelgrank.give:
+    description: Allows giving ranks to players
+    default: op
+  zelgrank.demote:
+    description: Allows removing ranks from players
+    default: op
+  zelgrank.info:
+    description: Allows viewing and managing player permissions
+    default: op
+  zelgrank.admin:
+    description: Full access to ZelGRank
+    default: op
+    children:
+      zelgrank.give: true
+      zelgrank.demote: true
+      zelgrank.info: true

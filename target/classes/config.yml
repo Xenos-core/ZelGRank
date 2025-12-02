@@ -1,0 +1,34 @@
+#Made with love @NiceHashe
+
+sound:
+  enabled: true
+  type: "ENTITY_EXPERIENCE_ORB_PICKUP"
+  volume: 1.0
+  pitch: 1.0
+messages:
+  no-permission: "<red>You don't have permission to use this command!"
+  player-not-found: "<red>Player <yellow>{player}</yellow> is not online!"
+  rank-given: "<green>Successfully gave rank <yellow>{rank}</yellow> to <yellow>{player}</yellow> for <yellow>{duration}</yellow>!"
+  rank-removed: "<green>Successfully removed rank <yellow>{rank}</yellow> from <yellow>{player}</yellow>!"
+  broadcast:
+    - ""
+    - "<green>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    - "<green>✦ <bold>RANK PURCHASE</bold> ✦"
+    - ""
+    - "<green>Player: <white>{player}"
+    - "<green>Rank: <green><bold>{rank}</bold>"
+    - "<green>Price: <green>${price}"
+    - ""
+    - "<green>Thank you for purchasing from <green><bold>NoxelSMP</bold>!"
+    - "<green>For rank purchases, contact: <green>@NoxelStore"
+    - "<green>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    - ""
+rank-prices:
+  VIP: "9.99"
+  VIP+: "19.99"
+  MVP: "29.99"
+  MVP+: "49.99"
+  Premium: "14.99"
+  Elite: "39.99"
+  Legend: "59.99"
+  default: "0.00"
