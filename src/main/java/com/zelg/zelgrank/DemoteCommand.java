@@ -11,6 +11,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import java.util.UUID;
 
 public class DemoteCommand implements CommandExecutor {
     private final ZelGRank plugin;
@@ -35,24 +36,27 @@ public class DemoteCommand implements CommandExecutor {
         }
         String targetName = args[0];
         String rankName = args[1];
-        Player targetPlayer = Bukkit.getPlayer(targetName);
-        if (targetPlayer == null) {
-            sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.player-not-found", "<red>Player not found!").replace("{player}", targetName)));
-            return true;
-        }
-        demoteRank(targetPlayer, rankName, sender);
+        luckPerms.getUserManager().lookupUniqueId(targetName).thenAcceptAsync(uuid -> {
+            if (uuid == null) {
+                sender.sendMessage(miniMessage.deserialize("<red>Player <yellow>" + targetName + "</yellow> has never joined the server!"));
+                return;
+            }
+            demoteRank(uuid, targetName, rankName, sender);
+        });
         return true;
     }
 
-    private void demoteRank(Player targetPlayer, String rankName, CommandSender sender) {
-        luckPerms.getUserManager().loadUser(targetPlayer.getUniqueId()).thenAcceptAsync(user -> {
+    private void demoteRank(UUID targetUUID, String targetName, String rankName, CommandSender sender) {
+        luckPerms.getUserManager().loadUser(targetUUID).thenAcceptAsync(user -> {
             if (user == null) {
                 sender.sendMessage(miniMessage.deserialize("<red>Failed to load user data!"));
                 return;
             }
             user.data().clear(node -> node instanceof InheritanceNode && ((InheritanceNode) node).getGroupName().equalsIgnoreCase(rankName));
             luckPerms.getUserManager().saveUser(user).thenRun(() -> {
-                sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.rank-removed", "<green>Successfully removed rank <yellow>{rank}</yellow> from <yellow>{player}</yellow>!").replace("{player}", targetPlayer.getName()).replace("{rank}", rankName)));
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.rank-removed", "<green>Successfully removed rank <yellow>{rank}</yellow> from <yellow>{player}</yellow>!").replace("{player}", targetName).replace("{rank}", rankName)));
+                });
             });
         });
     }

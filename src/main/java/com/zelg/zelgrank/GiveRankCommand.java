@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,11 +47,6 @@ public class GiveRankCommand implements CommandExecutor {
         String targetName = args[0];
         String rankName = args[1];
         String durationString = args.length > 2 ? args[2] : null;
-        Player targetPlayer = Bukkit.getPlayer(targetName);
-        if (targetPlayer == null) {
-            sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.player-not-found", "<red>Player not found!").replace("{player}", targetName)));
-            return true;
-        }
         Duration duration = null;
         if (durationString != null) {
             try {
@@ -60,12 +56,19 @@ public class GiveRankCommand implements CommandExecutor {
                 return true;
             }
         }
-        giveRank(targetPlayer, rankName, duration, sender);
+        Duration finalDuration = duration;
+        luckPerms.getUserManager().lookupUniqueId(targetName).thenAcceptAsync(uuid -> {
+            if (uuid == null) {
+                sender.sendMessage(miniMessage.deserialize("<red>Player <yellow>" + targetName + "</yellow> has never joined the server!"));
+                return;
+            }
+            giveRank(uuid, targetName, rankName, finalDuration, sender);
+        });
         return true;
     }
 
-    private void giveRank(Player targetPlayer, String rankName, Duration duration, CommandSender sender) {
-        luckPerms.getUserManager().loadUser(targetPlayer.getUniqueId()).thenAcceptAsync(user -> {
+    private void giveRank(UUID targetUUID, String targetName, String rankName, Duration duration, CommandSender sender) {
+        luckPerms.getUserManager().loadUser(targetUUID).thenAcceptAsync(user -> {
             if (user == null) {
                 sender.sendMessage(miniMessage.deserialize("<red>Failed to load user data!"));
                 return;
@@ -78,27 +81,31 @@ public class GiveRankCommand implements CommandExecutor {
             user.data().add(node);
             luckPerms.getUserManager().saveUser(user).thenRun(() -> {
                 String durationText = duration != null ? formatDuration(duration) : "permanent";
-                sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.rank-given", "<green>Successfully gave rank <yellow>{rank}</yellow> to <yellow>{player}</yellow> for <yellow>{duration}</yellow>!").replace("{player}", targetPlayer.getName()).replace("{rank}", rankName).replace("{duration}", durationText)));
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.rank-given", "<green>Successfully gave rank <yellow>{rank}</yellow> to <yellow>{player}</yellow> for <yellow>{duration}</yellow>!").replace("{player}", targetName).replace("{rank}", rankName).replace("{duration}", durationText)));
+                });
                 String price = plugin.getConfig().getString("rank-prices." + rankName, plugin.getConfig().getString("rank-prices.default", "0.00"));
                 List<String> broadcastLines = plugin.getConfig().getStringList("messages.broadcast");
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    onlinePlayer.sendMessage(Component.text(""));
-                    onlinePlayer.sendMessage(miniMessage.deserialize("<green>" + getPlayerHead() + " <bold>" + targetPlayer.getName() + "</bold>"));
-                    for (String line : broadcastLines) {
-                        Component lineComponent = miniMessage.deserialize(line.replace("{player}", targetPlayer.getName()).replace("{rank}", rankName).replace("{price}", price));
-                        onlinePlayer.sendMessage(lineComponent);
-                    }
-                    if (plugin.getConfig().getBoolean("sound.enabled", true)) {
-                        try {
-                            String soundName = plugin.getConfig().getString("sound.type", "ENTITY_EXPERIENCE_ORB_PICKUP");
-                            Sound sound = Sound.valueOf(soundName);
-                            float volume = (float) plugin.getConfig().getDouble("sound.volume", 1.0);
-                            float pitch = (float) plugin.getConfig().getDouble("sound.pitch", 1.0);
-                            onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
-                        } catch (IllegalArgumentException e) {
-                            plugin.getLogger().warning("Invalid sound type in config: " + e.getMessage());
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        onlinePlayer.sendMessage(Component.text(""));
+                        onlinePlayer.sendMessage(miniMessage.deserialize("<green>" + getPlayerHead() + " <bold>" + targetName + "</bold>"));
+                        for (String line : broadcastLines) {
+                            Component lineComponent = miniMessage.deserialize(line.replace("{player}", targetName).replace("{rank}", rankName).replace("{price}", price));
+                            onlinePlayer.sendMessage(lineComponent);
                         }
-                    }
+                        if (plugin.getConfig().getBoolean("sound.enabled", true)) {
+                            try {
+                                String soundName = plugin.getConfig().getString("sound.type", "ENTITY_EXPERIENCE_ORB_PICKUP");
+                                Sound sound = Sound.valueOf(soundName);
+                                float volume = (float) plugin.getConfig().getDouble("sound.volume", 1.0);
+                                float pitch = (float) plugin.getConfig().getDouble("sound.pitch", 1.0);
+                                onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
+                            } catch (IllegalArgumentException e) {
+                                plugin.getLogger().warning("Invalid sound type in config: " + e.getMessage());
+                            }
+                        }
+                    });
                 }
             });
         });
