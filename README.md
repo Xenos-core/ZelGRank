@@ -10,7 +10,7 @@ A lightweight Minecraft plugin that simplifies LuckPerms rank management with vi
 - **Sound Effects** - sound plays for all players on rank changes
 - **Permission GUI** - View player groups in an interactive inventory interface
 - **Configurable Messages** - Customize all messages, sounds, and rank prices via config.yml
-- **LuckPerms Integration** - Seamlessly works with LuckPerms as a hard dependency
+- **LuckPerms Integration** - Seamlessly works with LuckPerms as a hard dependency.
 
 ## Commands
 
