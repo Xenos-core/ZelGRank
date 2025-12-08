@@ -22,6 +22,11 @@ commands:
     usage: /ginfo <player>
     permission: zelgrank.info
     aliases: [groupinfo, rankinfo]
+  zelgrank:
+    description: Reload ZelGRank configuration
+    usage: /zelgrank reload
+    permission: zelgrank.reload
+    aliases: [zgr, zrank]
 
 permissions:
   zelgrank.give:
@@ -33,6 +38,9 @@ permissions:
   zelgrank.info:
     description: Allows viewing and managing player permissions
     default: op
+  zelgrank.reload:
+    description: Allows reloading plugin configuration
+    default: op
   zelgrank.admin:
     description: Full access to ZelGRank
     default: op
@@ -40,3 +48,4 @@ permissions:
       zelgrank.give: true
       zelgrank.demote: true
       zelgrank.info: true
+      zelgrank.reload: true

@@ -18,6 +18,7 @@ public class ZelGRank extends JavaPlugin {
         getCommand("giverank").setExecutor(new GiveRankCommand(this, luckPerms));
         getCommand("demote").setExecutor(new DemoteCommand(this, luckPerms));
         getCommand("ginfo").setExecutor(new GInfoCommand(this, luckPerms));
+        getCommand("zelgrank").setExecutor(new ReloadCommand(this));
         getServer().getPluginManager().registerEvents(new RankExpiryNotifier(this, luckPerms), this);
         getLogger().info("ZelGRank has been enabled!");
     }
