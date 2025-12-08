@@ -38,4 +38,4 @@ A lightweight Minecraft plugin that simplifies LuckPerms rank management with vi
 /ginfo CreepySxS
 ```
 
-## Ensure **LuckPerms** is installed (required dependency)
+## Ensure **LuckPerms** is installed (required dependency).
