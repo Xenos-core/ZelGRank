@@ -10,14 +10,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.concurrent.CompletableFuture;
 
 public class ZelGRankExpansion extends PlaceholderExpansion {
-    private final ZelGRank plugin;
     private final LuckPerms luckPerms;
 
     public ZelGRankExpansion(ZelGRank plugin, LuckPerms luckPerms) {
-        this.plugin = plugin;
         this.luckPerms = luckPerms;
     }
 
