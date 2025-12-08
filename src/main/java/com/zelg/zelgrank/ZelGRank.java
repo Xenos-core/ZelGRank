@@ -20,6 +20,10 @@ public class ZelGRank extends JavaPlugin {
         getCommand("ginfo").setExecutor(new GInfoCommand(this, luckPerms));
         getCommand("zelgrank").setExecutor(new ReloadCommand(this));
         getServer().getPluginManager().registerEvents(new RankExpiryNotifier(this, luckPerms), this);
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new ZelGRankExpansion(this, luckPerms).register();
+            getLogger().info("PlaceholderAPI integration enabled!");
+        }
         getLogger().info("ZelGRank has been enabled!");
     }
 

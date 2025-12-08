@@ -5,6 +5,7 @@ api-version: '1.20'
 author: Macronis
 description: Simplified rank management with LuckPerms integration
 depend: [LuckPerms]
+softdepend: [PlaceholderAPI]
 
 commands:
   giverank:
