@@ -28,14 +28,14 @@ public class DemoteCommand implements CommandExecutor {
             return true;
         }
         if (args.length < 2) {
-            sender.sendMessage(miniMessage.deserialize("<gold>Usage: /demote <player> <rank>"));
+            sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.usage.demote", "<gold>Usage: /demote <player> <rank>")));
             return true;
         }
         String targetName = args[0];
         String rankName = args[1];
         luckPerms.getUserManager().lookupUniqueId(targetName).thenAcceptAsync(uuid -> {
             if (uuid == null) {
-                sender.sendMessage(miniMessage.deserialize("<red>Player <yellow>" + targetName + "</yellow> has never joined the server!"));
+                sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.player-not-found", "<red>Player <yellow>{player}</yellow> has never joined the server!").replace("{player}", targetName)));
                 return;
             }
             demoteRank(uuid, targetName, rankName, sender);

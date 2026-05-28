@@ -37,8 +37,8 @@ public class GiveRankCommand implements CommandExecutor {
             return true;
         }
         if (args.length < 2) {
-            sender.sendMessage(miniMessage.deserialize("<gold>Usage: /giverank <player> <rank> [duration]"));
-            sender.sendMessage(miniMessage.deserialize("<gray>Duration format: <yellow>30s</yellow>, <yellow>5m</yellow>, <yellow>1h</yellow>, <yellow>7d</yellow>, <yellow>1w</yellow>, <yellow>1M</yellow>, <yellow>1y"));
+            sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.usage.giverank", "<gold>Usage: /giverank <player> <rank> [duration]")));
+            sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.duration-format", "<gray>Duration format: <yellow>30s</yellow>, <yellow>5m</yellow>, <yellow>1h</yellow>, <yellow>7d</yellow>, <yellow>1w</yellow>, <yellow>1M</yellow>, <yellow>1y")));
             return true;
         }
         String targetName = args[0];
@@ -49,14 +49,14 @@ public class GiveRankCommand implements CommandExecutor {
             try {
                 duration = parseDuration(durationString);
             } catch (IllegalArgumentException e) {
-                sender.sendMessage(miniMessage.deserialize("<red>Invalid duration format! Use: 30s, 5m, 1h, 7d, 1w, 1M, 1y"));
+                sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.invalid-duration", "<red>Invalid duration format! Use: 30s, 5m, 1h, 7d, 1w, 1M, 1y")));
                 return true;
             }
         }
         Duration finalDuration = duration;
         luckPerms.getUserManager().lookupUniqueId(targetName).thenAcceptAsync(uuid -> {
             if (uuid == null) {
-                sender.sendMessage(miniMessage.deserialize("<red>Player <yellow>" + targetName + "</yellow> has never joined the server!"));
+                sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.player-not-found", "<red>Player <yellow>{player}</yellow> has never joined the server!").replace("{player}", targetName)));
                 return;
             }
             giveRank(uuid, targetName, rankName, finalDuration, sender);
@@ -82,28 +82,7 @@ public class GiveRankCommand implements CommandExecutor {
                     sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.rank-given", "<green>Successfully gave rank <yellow>{rank}</yellow> to <yellow>{player}</yellow> for <yellow>{duration}</yellow>!").replace("{player}", targetName).replace("{rank}", rankName).replace("{duration}", durationText)));
                 });
                 String price = plugin.getConfig().getString("rank-prices." + rankName, plugin.getConfig().getString("rank-prices.default", "0.00"));
-                List<String> broadcastLines = plugin.getConfig().getStringList("messages.broadcast");
-                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    Bukkit.getScheduler().runTask(plugin, () -> {
-                        onlinePlayer.sendMessage(Component.text(""));
-                        onlinePlayer.sendMessage(miniMessage.deserialize("<green>" + getPlayerHead() + " <bold>" + targetName + "</bold>"));
-                        for (String line : broadcastLines) {
-                            Component lineComponent = miniMessage.deserialize(line.replace("{player}", targetName).replace("{rank}", rankName).replace("{price}", price));
-                            onlinePlayer.sendMessage(lineComponent);
-                        }
-                        if (plugin.getConfig().getBoolean("sound.enabled", true)) {
-                            try {
-                                String soundName = plugin.getConfig().getString("sound.type", "ENTITY_EXPERIENCE_ORB_PICKUP");
-                                Sound sound = Sound.valueOf(soundName);
-                                float volume = (float) plugin.getConfig().getDouble("sound.volume", 1.0);
-                                float pitch = (float) plugin.getConfig().getDouble("sound.pitch", 1.0);
-                                onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
-                            } catch (IllegalArgumentException e) {
-                                plugin.getLogger().warning("Invalid sound type in config: " + e.getMessage());
-                            }
-                        }
-                    });
-                }
+                sendBroadcast(targetName, rankName, price);
             });
         });
     }
@@ -143,6 +122,41 @@ public class GiveRankCommand implements CommandExecutor {
             return (seconds / 2592000) + "M";
         } else {
             return (seconds / 31536000) + "y";
+        }
+    }
+
+    private void sendBroadcast(String targetName, String rankName, String price) {
+        if (!plugin.getConfig().getBoolean("broadcast.enabled", true)) {
+            return;
+        }
+        String recipients = plugin.getConfig().getString("broadcast.recipients", "all");
+        if ("none".equalsIgnoreCase(recipients)) {
+            return;
+        }
+        List<String> broadcastLines = plugin.getConfig().getStringList("broadcast.lines");
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if ("staff" .equalsIgnoreCase(recipients) && !onlinePlayer.hasPermission(plugin.getConfig().getString("broadcast.staff-permission", "zelgrank.notify"))) {
+                continue;
+            }
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                onlinePlayer.sendMessage(Component.text(""));
+                onlinePlayer.sendMessage(miniMessage.deserialize("<green>" + getPlayerHead() + " <bold>" + targetName + "</bold>"));
+                for (String line : broadcastLines) {
+                    Component lineComponent = miniMessage.deserialize(line.replace("{player}", targetName).replace("{rank}", rankName).replace("{price}", price));
+                    onlinePlayer.sendMessage(lineComponent);
+                }
+                if (plugin.getConfig().getBoolean("sound.enabled", true)) {
+                    try {
+                        String soundName = plugin.getConfig().getString("sound.type", "ENTITY_EXPERIENCE_ORB_PICKUP");
+                        Sound sound = Sound.valueOf(soundName);
+                        float volume = (float) plugin.getConfig().getDouble("sound.volume", 1.0);
+                        float pitch = (float) plugin.getConfig().getDouble("sound.pitch", 1.0);
+                        onlinePlayer.playSound(onlinePlayer.getLocation(), sound, volume, pitch);
+                    } catch (IllegalArgumentException e) {
+                        plugin.getLogger().warning("Invalid sound type in config: " + e.getMessage());
+                    }
+                }
+            });
         }
     }
 

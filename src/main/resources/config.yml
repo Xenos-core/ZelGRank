@@ -8,16 +8,29 @@ sound:
 #RANK EXPIRY NOTIFICATIONS
 messages:
   no-permission: "<red>You don't have permission to use this command!"
-  player-not-found: "<red>Player <yellow>{player}</yellow> is not online!"
+  only-players: "<red>Only players can use this command!"
+  player-not-found: "<red>Player <yellow>{player}</yellow> has never joined the server!"
+  invalid-duration: "<red>Invalid duration format! Use: 30s, 5m, 1h, 7d, 1w, 1M, 1y"
+  usage:
+    giverank: "<gold>Usage: /giverank <player> <rank> [duration]"
+    demote: "<gold>Usage: /demote <player> <rank>"
+    ginfo: "<gold>Usage: /ginfo <player>"
+  duration-format: "<gray>Duration format: <yellow>30s</yellow>, <yellow>5m</yellow>, <yellow>1h</yellow>, <yellow>7d</yellow>, <yellow>1w</yellow>, <yellow>1M</yellow>, <yellow>1y"
   rank-given: "<green>Successfully gave rank <yellow>{rank}</yellow> to <yellow>{player}</yellow> for <yellow>{duration}</yellow>!"
   rank-removed: "<green>Successfully removed rank <yellow>{rank}</yellow> from <yellow>{player}</yellow>!"
+  reload-success: "<green>ZelGRank configuration reloaded successfully!"
+  reload-failure: "<red>Failed to reload configuration: {error}"
   rank-expiry-header: "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   rank-expiry-title: "<red><bold>⚠ RANK EXPIRATION WARNING ⚠</bold>"
   rank-expiry-line: "<yellow>• Rank <gold><bold>{rank}</bold></gold> expires in: <red>{time}</red>"
   rank-expiry-renew: "<green>Renew your rank at: <white>@NoxelStore"
   rank-expiry-footer: "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 #RANK PURCHASE BROADCAST
-  broadcast:
+broadcast:
+  enabled: true
+  recipients: "all"
+  staff-permission: "zelgrank.notify"
+  lines:
     - ""
     - "<green>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     - "<green>✦ <bold>RANK PURCHASE</bold> ✦"

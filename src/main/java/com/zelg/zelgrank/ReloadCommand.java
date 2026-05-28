@@ -18,14 +18,14 @@ public class ReloadCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("zelgrank.reload")) {
-            sender.sendMessage(miniMessage.deserialize("<red>You don't have permission to use this command!"));
+            sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.no-permission", "<red>You don't have permission to use this command!")));
             return true;
         }
         try {
             plugin.reloadConfig();
-            sender.sendMessage(miniMessage.deserialize("<green>ZelGRank configuration reloaded successfully!"));
+            sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.reload-success", "<green>ZelGRank configuration reloaded successfully!")));
         } catch (Exception e) {
-            sender.sendMessage(miniMessage.deserialize("<red>Failed to reload configuration: " + e.getMessage()));
+            sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.reload-failure", "<red>Failed to reload configuration: {error}").replace("{error}", e.getMessage())));
             plugin.getLogger().severe("Error reloading config: " + e.getMessage());
         }
         return true;

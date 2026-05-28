@@ -33,7 +33,7 @@ public class GInfoCommand implements CommandExecutor, Listener {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(miniMessage.deserialize("<red>Only players can use this command!"));
+            sender.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.only-players", "<red>Only players can use this command!")));
             return true;
         }
         if (!player.hasPermission("zelgrank.info")) {
@@ -41,7 +41,7 @@ public class GInfoCommand implements CommandExecutor, Listener {
             return true;
         }
         if (args.length < 1) {
-            player.sendMessage(miniMessage.deserialize("<gold>Usage: /ginfo <player>"));
+            player.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.usage.ginfo", "<gold>Usage: /ginfo <player>")));
             return true;
         }
         String targetName = args[0];
@@ -51,7 +51,7 @@ public class GInfoCommand implements CommandExecutor, Listener {
         } else {
             luckPerms.getUserManager().lookupUniqueId(targetName).thenAccept(uuid -> {
                 if (uuid == null) {
-                    player.sendMessage(miniMessage.deserialize("<red>Player <yellow>" + targetName + "</yellow> has never joined the server!"));
+                    player.sendMessage(miniMessage.deserialize(plugin.getConfig().getString("messages.player-not-found", "<red>Player <yellow>{player}</yellow> has never joined the server!").replace("{player}", targetName)));
                 } else {
                     openPermissionsGUI(player, targetName, uuid);
                 }
