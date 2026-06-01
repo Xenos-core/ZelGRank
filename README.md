@@ -39,3 +39,28 @@ A lightweight Minecraft plugin that simplifies LuckPerms rank management with vi
 ```
 
 ## Ensure **LuckPerms** is installed (required dependency).
+
+## Developer API
+
+ZelGRank now exposes `ZelGRankApi` through Bukkit services:
+
+```java
+RegisteredServiceProvider<ZelGRankApi> provider =
+    Bukkit.getServicesManager().getRegistration(ZelGRankApi.class);
+
+ZelGRankApi api = provider.getProvider();
+```
+
+Available API methods:
+
+- `giveRank(uuid, name, rank, duration, actor)`
+- `removeRank(uuid, name, rank, actor)`
+- `getRanks(uuid)`
+- `hasRank(uuid, rank)`
+- `lookupUniqueId(playerName)`
+- `rankExists(rank)`
+
+Plugins can also listen for:
+
+- `ZelGRankGivenEvent`
+- `ZelGRankRemovedEvent`
