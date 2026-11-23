@@ -1,0 +1,67 @@
+# ZelGRank messages
+# Everything here uses MiniMessage: https://docs.advntr.dev/minimessage/format.html
+# Set any message to "" to turn it off.
+#
+# <prefix> works in every message.
+
+prefix: "<gradient:#3CE68C:#16A34A><bold>ZelGRank</bold></gradient> <dark_gray>»</dark_gray> "
+
+no-permission: "<prefix><red>You don't have permission to do that."
+only-players: "<prefix><red>Only players can use this command."
+player-not-found: "<prefix><red><white><player></white> has never joined the server."
+rank-not-found: "<prefix><red>There is no LuckPerms group called <white><rank></white>."
+invalid-duration: "<prefix><red><white><input></white> isn't a valid duration. Try 30m, 12h, 7d, 1M or 1d12h."
+something-went-wrong: "<prefix><red>Something went wrong, check the console."
+
+usage:
+  giverank: "<prefix><gray>Usage: <white>/giverank <player> <rank> [duration] [-s]"
+  demote: "<prefix><gray>Usage: <white>/demote <player> <rank>"
+  ginfo: "<prefix><gray>Usage: <white>/ginfo <player>"
+  zelgrank: "<prefix><gray>Usage: <white>/zelgrank reload"
+
+# <player> <rank> <duration>
+rank-given: "<prefix><green>Gave <white><rank></white> to <white><player></white> for <white><duration></white>."
+# <player> <rank> <duration> <time> (time = what's left after extending)
+rank-extended: "<prefix><green>Added <white><duration></white> to <white><player></white>'s <white><rank></white>. Time left: <white><time></white>."
+rank-made-permanent: "<prefix><green><white><player></white>'s <white><rank></white> is permanent now."
+rank-already-permanent: "<prefix><yellow><white><player></white> already has <white><rank></white> permanently."
+rank-removed: "<prefix><green>Removed <white><rank></white> from <white><player></white>."
+rank-not-owned: "<prefix><yellow><white><player></white> doesn't have <white><rank></white>."
+permanent: "permanent"
+
+reload-success: "<prefix><green>Reloaded config.yml and messages.yml."
+reload-failure: "<prefix><red>Reload failed: <white><error></white>"
+
+# Shown to players on join when one of their ranks runs out soon (see config.yml expiry-warning)
+expiry-warning:
+  header:
+    - ""
+    - "<gradient:#3CE68C:#16A34A><strikethrough>                                        </strikethrough></gradient>"
+    - " <yellow><bold>⚠</bold> <white>Some of your ranks are about to expire"
+    - ""
+  # <rank> <time>
+  line: "  <gray>•</gray> <green><rank></green> <gray>ends in</gray> <white><time></white>"
+  footer:
+    - ""
+    - " <gray>Renew it on the server store before it runs out."
+    - "<gradient:#3CE68C:#16A34A><strikethrough>                                        </strikethrough></gradient>"
+    - ""
+
+menu:
+  # <player>
+  title: "<dark_gray><player>'s ranks"
+  head-name: "<green><bold><player>"
+  # <count>
+  head-lore:
+    - "<gray>Ranks: <white><count>"
+  # <rank> <weight>
+  rank-name: "<green><rank>"
+  rank-lore-permanent:
+    - "<gray>Weight: <white><weight>"
+    - "<gray>Expires: <white>never"
+  # <rank> <weight> <time>
+  rank-lore-temporary:
+    - "<gray>Weight: <white><weight>"
+    - "<gray>Expires in: <yellow><time>"
+  no-ranks: "<gray>No ranks"
+  close: "<red>Close"
