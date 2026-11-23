@@ -1,60 +1,103 @@
 package com.zelg.zelgrank;
 
 import com.zelg.zelgrank.api.ZelGRankApi;
+import com.zelg.zelgrank.broadcast.PurchaseBroadcast;
+import com.zelg.zelgrank.command.DemoteCommand;
+import com.zelg.zelgrank.command.GInfoCommand;
+import com.zelg.zelgrank.command.GiveRankCommand;
+import com.zelg.zelgrank.command.ZelGRankCommand;
+import com.zelg.zelgrank.config.Messages;
+import com.zelg.zelgrank.config.Settings;
+import com.zelg.zelgrank.hook.ZelGRankExpansion;
+import com.zelg.zelgrank.listener.ExpiryWarningListener;
+import com.zelg.zelgrank.menu.MenuListener;
+import com.zelg.zelgrank.util.Tasks;
 import net.luckperms.api.LuckPerms;
-import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ZelGRank extends JavaPlugin {
-    private LuckPerms luckPerms;
+public final class ZelGRank extends JavaPlugin {
+
+    private final Messages messages = new Messages(this);
+    private Settings settings;
+    private Tasks tasks;
     private ZelGRankApi api;
+    private PurchaseBroadcast broadcast;
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
-        if (!setupLuckPerms()) {
-            getLogger().severe("LuckPerms not found! Disabling plugin...");
+        LuckPerms luckPerms = getServer().getServicesManager().load(LuckPerms.class);
+        if (luckPerms == null) {
+            getLogger().severe("LuckPerms isn't loaded, ZelGRank can't do anything without it.");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        api = new ZelGRankApi(this, luckPerms);
+
+        saveDefaultConfig();
+        reload();
+
+        tasks = new Tasks(this);
+        api = new ZelGRankApi(luckPerms, tasks);
+        broadcast = new PurchaseBroadcast(this);
         getServer().getServicesManager().register(ZelGRankApi.class, api, this, ServicePriority.Normal);
 
-        getCommand("giverank").setExecutor(new GiveRankCommand(this, api));
-        getCommand("demote").setExecutor(new DemoteCommand(this, api));
-        getCommand("ginfo").setExecutor(new GInfoCommand(this, luckPerms));
-        getCommand("zelgrank").setExecutor(new ReloadCommand(this));
-        getServer().getPluginManager().registerEvents(new RankExpiryNotifier(this, luckPerms), this);
-        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new ZelGRankExpansion(this, luckPerms).register();
-            getLogger().info("PlaceholderAPI integration enabled!");
+        register("giverank", new GiveRankCommand(this));
+        register("demote", new DemoteCommand(this));
+        register("ginfo", new GInfoCommand(this));
+        register("zelgrank", new ZelGRankCommand(this));
+
+        getServer().getPluginManager().registerEvents(new ExpiryWarningListener(this), this);
+        getServer().getPluginManager().registerEvents(new MenuListener(), this);
+
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new ZelGRankExpansion(this).register();
+            getLogger().info("Hooked into PlaceholderAPI");
         }
-        getLogger().info("ZelGRank has been enabled!");
     }
 
     @Override
     public void onDisable() {
-        if (api != null) {
-            getServer().getServicesManager().unregister(ZelGRankApi.class, api);
+        getServer().getServicesManager().unregisterAll(this);
+        if (tasks != null) {
+            tasks.cancelAll();
         }
-        getLogger().info("ZelGRank has been disabled!");
     }
 
-    private boolean setupLuckPerms() {
-        RegisteredServiceProvider<LuckPerms> provider = getServer().getServicesManager().getRegistration(LuckPerms.class);
-        if (provider != null) {
-            luckPerms = provider.getProvider();
-            return true;
+    /** Re-reads config.yml and messages.yml. */
+    public void reload() {
+        reloadConfig();
+        settings = new Settings(getConfig(), getLogger());
+        messages.reload();
+    }
+
+    private void register(String name, TabExecutor executor) {
+        PluginCommand command = getCommand(name);
+        if (command == null) {
+            throw new IllegalStateException("/" + name + " is missing from plugin.yml");
         }
-        return false;
+        command.setExecutor(executor);
+        command.setTabCompleter(executor);
     }
 
-    public LuckPerms getLuckPerms() {
-        return luckPerms;
+    public Messages messages() {
+        return messages;
     }
 
-    public ZelGRankApi getApi() {
+    public Settings settings() {
+        return settings;
+    }
+
+    public Tasks tasks() {
+        return tasks;
+    }
+
+    public ZelGRankApi api() {
         return api;
+    }
+
+    public PurchaseBroadcast broadcast() {
+        return broadcast;
     }
 }

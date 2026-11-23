@@ -1,55 +1,49 @@
-#Made with love @NiceHashe
-#SOUNDS 
-sound:
-  enabled: true
-  type: "ENTITY_EXPERIENCE_ORB_PICKUP"
-  volume: 1.0
-  pitch: 1.0
-#RANK EXPIRY NOTIFICATIONS
-messages:
-  no-permission: "<red>You don't have permission to use this command!"
-  only-players: "<red>Only players can use this command!"
-  player-not-found: "<red>Player <yellow>{player}</yellow> has never joined the server!"
-  invalid-duration: "<red>Invalid duration format! Use: 30s, 5m, 1h, 7d, 1w, 1M, 1y"
-  usage:
-    giverank: "<gold>Usage: /giverank <player> <rank> [duration]"
-    demote: "<gold>Usage: /demote <player> <rank>"
-    ginfo: "<gold>Usage: /ginfo <player>"
-  duration-format: "<gray>Duration format: <yellow>30s</yellow>, <yellow>5m</yellow>, <yellow>1h</yellow>, <yellow>7d</yellow>, <yellow>1w</yellow>, <yellow>1M</yellow>, <yellow>1y"
-  rank-given: "<green>Successfully gave rank <yellow>{rank}</yellow> to <yellow>{player}</yellow> for <yellow>{duration}</yellow>!"
-  rank-removed: "<green>Successfully removed rank <yellow>{rank}</yellow> from <yellow>{player}</yellow>!"
-  reload-success: "<green>ZelGRank configuration reloaded successfully!"
-  reload-failure: "<red>Failed to reload configuration: {error}"
-  rank-expiry-header: "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  rank-expiry-title: "<red><bold>⚠ RANK EXPIRATION WARNING ⚠</bold>"
-  rank-expiry-line: "<yellow>• Rank <gold><bold>{rank}</bold></gold> expires in: <red>{time}</red>"
-  rank-expiry-renew: "<green>Renew your rank at: <white>@NoxelStore"
-  rank-expiry-footer: "<gold>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-#RANK PURCHASE BROADCAST
+# ZelGRank config
+# Messages live in messages.yml. Run /zelgrank reload after editing either file.
+
+# Purchase announcement sent when someone is given a rank.
+# Add -s to /giverank to give a rank quietly, e.g. /giverank Steve VIP 30d -s
 broadcast:
   enabled: true
-  recipients: "all"
+  # all = everyone online, staff = only players with staff-permission
+  recipients: all
   staff-permission: "zelgrank.notify"
+  # <player> <rank> <duration> <price>
   lines:
     - ""
-    - "<green>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    - "<green>✦ <bold>RANK PURCHASE</bold> ✦"
+    - "<gradient:#3CE68C:#16A34A><strikethrough>                                        </strikethrough></gradient>"
+    - "        <gradient:#3CE68C:#16A34A><bold>✦ RANK PURCHASE ✦</bold></gradient>"
     - ""
-    - "<green>Player: <white>{player}"
-    - "<green>Rank: <green><bold>{rank}</bold>"
-    - "<green>Price: <green>${price}"
+    - "  <gray>Player</gray> <white><player>"
+    - "  <gray>Rank</gray> <green><bold><rank></bold>"
+    - "  <gray>Length</gray> <white><duration>"
+    - "  <gray>Price</gray> <green>$<price>"
     - ""
-    - "<green>Thank you for purchasing from <green><bold>NoxelSMP</bold>!"
-    - "<green>For rank purchases, contact: <green>@NoxelStore"
-    - "<green>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    - "  <gray>Thanks for supporting the server!"
+    - "<gradient:#3CE68C:#16A34A><strikethrough>                                        </strikethrough></gradient>"
     - ""
-#RANK PRICES
+  sound:
+    enabled: true
+    # any sound key, like entity.player.levelup or ui.toast.challenge_complete
+    name: "entity.experience_orb.pickup"
+    volume: 1.0
+    pitch: 1.0
+
+# Price shown in the broadcast as <price>. Group names are matched case-insensitively.
+# A rank can have one price, or a price per duration with "permanent" and "default" as extras.
 rank-prices:
-  VIP: "9.99"
-  VIP+: "19.99"
-  MVP: "29.99"
-  MVP+: "49.99"
-  Premium: "14.99"
-  Elite: "39.99"
-  Legend: "59.99"
   default: "0.00"
+  vip:
+    7d: "4.99"
+    30d: "9.99"
+    permanent: "29.99"
+    default: "9.99"
+  mvp: "29.99"
+
+# Warn players on join when one of their temporary ranks ends soon.
+expiry-warning:
+  enabled: true
+  # how close to expiry a rank has to be, same format as /giverank (12h, 3d...)
+  within: 24h
+  # wait a bit after join so the warning isn't buried under join messages
+  delay-ticks: 40

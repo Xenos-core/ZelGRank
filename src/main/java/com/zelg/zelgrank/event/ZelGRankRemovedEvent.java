@@ -8,6 +8,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
+/**
+ * Fired after a rank was removed and saved to LuckPerms.
+ */
 public class ZelGRankRemovedEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
 
