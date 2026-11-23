@@ -1,52 +1,54 @@
 name: ZelGRank
 version: '${project.version}'
 main: com.zelg.zelgrank.ZelGRank
-api-version: '1.20'
+api-version: '1.21'
+folia-supported: true
 author: Macronis
-description: Simplified rank management with LuckPerms integration
+description: Give, renew and remove LuckPerms ranks with one command
+website: https://github.com/Xenos-core/ZelGRank
 depend: [LuckPerms]
 softdepend: [PlaceholderAPI]
 
 commands:
   giverank:
-    description: Give a rank to a player with optional duration
-    usage: /giverank <player> <rank> [duration]
-    permission: zelgrank.give
+    description: Give or extend a player's rank
+    usage: /giverank <player> <rank> [duration] [-s]
     aliases: [grank, givegroup]
   demote:
     description: Remove a rank from a player
     usage: /demote <player> <rank>
-    permission: zelgrank.demote
     aliases: [removerank, takerank]
   ginfo:
-    description: View and manage player permissions
+    description: See a player's ranks and when they expire
     usage: /ginfo <player>
-    permission: zelgrank.info
     aliases: [groupinfo, rankinfo]
   zelgrank:
-    description: Reload ZelGRank configuration
+    description: Reload ZelGRank
     usage: /zelgrank reload
-    permission: zelgrank.reload
     aliases: [zgr, zrank]
 
 permissions:
-  zelgrank.give:
-    description: Allows giving ranks to players
-    default: op
-  zelgrank.demote:
-    description: Allows removing ranks from players
-    default: op
-  zelgrank.info:
-    description: Allows viewing and managing player permissions
-    default: op
-  zelgrank.reload:
-    description: Allows reloading plugin configuration
-    default: op
   zelgrank.admin:
-    description: Full access to ZelGRank
+    description: Everything in ZelGRank
     default: op
     children:
       zelgrank.give: true
       zelgrank.demote: true
       zelgrank.info: true
       zelgrank.reload: true
+      zelgrank.notify: true
+  zelgrank.give:
+    description: Use /giverank
+    default: op
+  zelgrank.demote:
+    description: Use /demote
+    default: op
+  zelgrank.info:
+    description: Use /ginfo
+    default: op
+  zelgrank.reload:
+    description: Use /zelgrank reload
+    default: op
+  zelgrank.notify:
+    description: See purchase broadcasts when recipients is set to staff
+    default: op
